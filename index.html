@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Daniel Overesch – Küche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light only;
+  --bg:#FFFFFF; --card:#FFFFFF;
+  --ink:#28323B; --ink-soft:#6B7681; --line:#ECEFF2;
+  --blue:#37BEEA; --blue-deep:#1A97C6; --blue-tint:#E9F7FD;
+  --coral:#FF7E5F; --coral-deep:#F2603E; --sun:#FFC24B;
+  --shadow:0 10px 30px -18px rgba(40,50,59,.22);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#fff}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+.disp{font-family:'Space Grotesk',sans-serif}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit}
+.hidden{display:none !important}
+.wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+img{display:block;max-width:100%}
+
+/* photo frame + light fallback */
+.frame{position:relative;overflow:hidden;background:#EAF1F5}
+.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.frame .ph{position:absolute;inset:0;z-index:0;display:flex;align-items:flex-end;padding:16px}
+.frame .ph b{font-family:'Space Grotesk';font-weight:700;font-size:20px;line-height:1.05;letter-spacing:-.01em;color:var(--ink)}
+.frame .over{position:relative;z-index:2}
+
+/* label with blue tick */
+.lab{display:inline-flex;align-items:center;gap:9px;font-family:'Space Grotesk';font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.lab::before{content:"";width:22px;height:3px;background:var(--blue);border-radius:2px}
+
+/* LOGIN */
+#login{position:fixed;inset:0;z-index:50;background:#fff;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{width:100%;max-width:430px;animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.login-mark{font-family:'Space Grotesk';font-weight:700;font-size:15px;letter-spacing:.06em}
+.login-mark .d{color:var(--blue)}
+.login-card h1{font-family:'Space Grotesk';font-weight:600;font-size:40px;line-height:1.04;margin-top:24px;letter-spacing:-.015em}
+.login-rule{width:54px;height:4px;background:var(--blue);border-radius:3px;margin:20px 0}
+.login-card .sub{color:var(--ink-soft);font-size:15px;line-height:1.55;max-width:36ch}
+.pw-row{display:flex;gap:9px;margin-top:24px}
+.pw-row input{flex:1;border:1.5px solid var(--line);padding:14px 16px;border-radius:12px;font-size:15px;outline:none;transition:border-color .15s}
+.pw-row input:focus{border-color:var(--blue)}
+.pw-row button{background:var(--blue);color:#fff;font-weight:600;padding:0 24px;border-radius:12px;font-size:14.5px;font-family:'Space Grotesk';transition:.15s}
+.pw-row button:hover{background:var(--blue-deep)}
+.login-hint{margin-top:15px;font-size:12.5px;color:var(--ink-soft)}
+.login-hint b{color:var(--blue-deep)}
+
+#app{opacity:0;transition:opacity .5s}
+#app.on{opacity:1}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1160px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:20px}
+.mark{font-family:'Space Grotesk';font-weight:700;font-size:18px;letter-spacing:-.01em;flex-shrink:0;white-space:nowrap}
+.mark .dot{color:var(--blue)}
+.mark small{letter-spacing:.16em;font-size:9px;font-weight:600;color:var(--ink-soft);margin-left:8px}
+.nav{display:flex;gap:22px;font-size:14px;font-weight:500;color:var(--ink-soft);flex:1;font-family:'Space Grotesk'}
+.nav a{cursor:pointer;transition:.15s;position:relative;padding-bottom:2px}
+.nav a:hover{color:var(--ink)}
+.nav a:hover::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:var(--blue)}
+.tools{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.iconbtn{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:var(--ink-soft);transition:.15s;position:relative}
+.iconbtn:hover{background:var(--blue-tint);color:var(--blue-deep)}
+.iconbtn .badge{position:absolute;top:4px;right:4px;background:var(--coral);color:#fff;font-size:9px;font-weight:700;min-width:15px;height:15px;border-radius:8px;display:grid;place-items:center;padding:0 3px}
+.add-btn{background:var(--ink);color:#fff;font-weight:600;font-size:14px;padding:10px 15px;border-radius:10px;display:flex;align-items:center;gap:6px;font-family:'Space Grotesk';transition:.15s}
+.add-btn:hover{background:var(--coral);}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700;font-size:12.5px;font-family:'Space Grotesk'}
+.searchbar{border-bottom:1px solid var(--line);display:none}
+.searchbar.on{display:block;animation:fade .2s}
+.searchbar-in{max-width:1160px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:12px}
+.searchbar input{flex:1;border:none;outline:none;font-size:16px;padding:8px 0;background:transparent}
+
+/* HERO */
+.hero{padding:56px 0 20px}
+.hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:44px;align-items:center}
+.hero h1{font-family:'Space Grotesk';font-weight:600;font-size:clamp(38px,6vw,60px);line-height:1.02;letter-spacing:-.02em;margin:18px 0 0}
+.hero h1 .u{position:relative;white-space:nowrap}
+.hero h1 .u::after{content:"";position:absolute;left:0;right:0;bottom:.06em;height:.11em;background:var(--blue);border-radius:4px}
+.hero .sub{color:var(--ink-soft);font-size:16.5px;line-height:1.6;max-width:44ch;margin-top:22px}
+.hero-cta{display:flex;align-items:center;gap:20px;margin-top:28px}
+.btn-blue{background:var(--blue);color:#fff;font-weight:600;font-family:'Space Grotesk';padding:14px 24px;border-radius:12px;font-size:15px;transition:.15s}
+.btn-blue:hover{background:var(--blue-deep);transform:translateY(-1px)}
+.btn-text{font-weight:600;font-family:'Space Grotesk';font-size:14.5px;color:var(--ink);position:relative;padding-bottom:2px}
+.btn-text::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--blue);transition:.15s}
+.btn-text:hover::after{background:var(--ink)}
+.hero-feat{cursor:pointer}
+.hero-feat .frame{height:380px;border-radius:20px;box-shadow:var(--shadow)}
+.hero-feat .badge-feat{position:absolute;top:14px;left:14px;background:#fff;color:var(--ink);font-family:'Space Grotesk';font-size:11.5px;font-weight:600;letter-spacing:.03em;padding:6px 12px;border-radius:20px;display:flex;gap:6px;align-items:center;z-index:2}
+.hero-feat .badge-feat b{color:var(--blue-deep)}
+.hero-feat .fcap{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;color:#fff}
+.hero-feat .fcap h3{font-family:'Space Grotesk';font-weight:700;font-size:24px;line-height:1.05;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.hero-feat .fcap .m{font-size:13px;margin-top:5px;text-shadow:0 1px 8px rgba(0,0,0,.5);display:flex;gap:12px}
+
+/* SECTION */
+.section{padding:48px 0}
+.section-top{border-top:1px solid var(--line);margin-top:24px}
+.sec-head{margin-bottom:22px}
+.sec-head h2{font-family:'Space Grotesk';font-weight:600;font-size:clamp(24px,3.2vw,32px);letter-spacing:-.015em;margin-top:12px}
+.sec-head p{color:var(--ink-soft);font-size:14px;margin-top:6px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;margin-bottom:6px}
+.chips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;padding:8px 15px;border-radius:999px;border:1.5px solid var(--line);font-size:13.5px;font-weight:600;font-family:'Space Grotesk';color:var(--ink-soft);transition:.15s}
+.chip:hover{border-color:var(--blue);color:var(--blue-deep)}
+.chip.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin:16px 0 22px;gap:12px;flex-wrap:wrap}
+.toolbar .count{font-size:13px;color:var(--ink-soft);font-family:'Space Grotesk';font-weight:500}
+.sortsel{display:flex;gap:16px;font-family:'Space Grotesk'}
+.sortsel button{font-size:13px;color:var(--ink-soft);font-weight:500;padding-bottom:3px;position:relative;transition:.15s}
+.sortsel button:hover{color:var(--ink)}
+.sortsel button.on{color:var(--ink)}
+.sortsel button.on::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2.5px;background:var(--blue);border-radius:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(244px,1fr));gap:24px}
+
+/* CARD */
+.rcard{cursor:pointer;animation:rise .5s both}
+.rcard .frame{height:184px;border-radius:16px;transition:transform .18s, box-shadow .18s;box-shadow:var(--shadow)}
+.rcard:hover .frame{transform:translateY(-4px);box-shadow:0 18px 36px -18px rgba(40,50,59,.32)}
+.rcard .frame .heart{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.94);display:grid;place-items:center;font-size:15px;color:var(--ink-soft);transition:.15s}
+.rcard .frame .heart:hover{transform:scale(1.1)}
+.rcard .frame .heart.on{color:var(--coral)}
+.rcard .frame .src{position:absolute;bottom:10px;left:10px;font-size:10px;font-weight:600;font-family:'Space Grotesk';background:rgba(255,255,255,.92);color:var(--ink);padding:4px 9px;border-radius:20px;display:flex;gap:5px;align-items:center}
+.rcard .body{padding:13px 2px 0}
+.rcard .k{font-family:'Space Grotesk';font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--blue-deep);font-weight:600}
+.rcard h3{font-family:'Space Grotesk';font-weight:600;font-size:19px;line-height:1.15;margin:5px 0 9px;letter-spacing:-.01em}
+.rcard .meta{display:flex;align-items:center;gap:13px;font-size:12.5px;color:var(--ink-soft)}
+.rate-inline{color:var(--sun);font-weight:600;display:inline-flex;gap:4px;align-items:center;font-family:'Space Grotesk'}
+.rate-inline .cnt{color:var(--ink-soft);font-weight:400}
+
+/* ABOUT */
+.about{display:grid;grid-template-columns:210px 1fr;gap:32px;align-items:center}
+.about .frame{height:210px;border-radius:18px;box-shadow:var(--shadow)}
+.about h3{font-family:'Space Grotesk';font-weight:600;font-size:25px;margin:12px 0 12px;letter-spacing:-.01em}
+.about p{color:var(--ink-soft);font-size:15px;line-height:1.65;max-width:58ch}
+.about p b{color:var(--ink);font-weight:600}
+
+footer{border-top:1px solid var(--line);padding:34px 0;margin-top:26px}
+.foot-in{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;color:var(--ink-soft);font-size:12.5px;font-family:'Space Grotesk'}
+.foot-in .mark{color:var(--ink)}
+
+/* DETAIL */
+#detail{position:fixed;inset:0;z-index:40;background:#fff;overflow-y:auto;display:none}
+#detail.on{display:block;animation:fade .3s}
+.det-top{position:sticky;top:0;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:2}
+.det-top-in{max-width:840px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.back{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;font-family:'Space Grotesk';color:var(--ink-soft);transition:.15s}
+.back:hover{color:var(--ink)}
+.det-actions{display:flex;gap:8px}
+.det-actions button{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;font-family:'Space Grotesk';color:var(--ink-soft);border:1.5px solid var(--line);padding:8px 12px;border-radius:9px;transition:.15s}
+.det-actions button:hover{border-color:var(--blue);color:var(--blue-deep)}
+.det-actions button.saved{color:var(--coral-deep);border-color:var(--coral)}
+.det-wrap{max-width:840px;margin:0 auto;padding:0 22px 90px}
+.det-hero{height:330px;border-radius:20px;margin-top:20px;box-shadow:var(--shadow)}
+.det-head{margin-top:26px}
+.det-head .k{font-family:'Space Grotesk';font-size:11.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--blue-deep);font-weight:600}
+.det-head h1{font-family:'Space Grotesk';font-weight:600;font-size:clamp(30px,5vw,46px);line-height:1.02;letter-spacing:-.02em;margin:12px 0 0}
+.det-head .lede{color:var(--ink-soft);font-size:16px;margin-top:14px;max-width:60ch;line-height:1.6}
+.det-rate{display:flex;align-items:center;gap:15px;margin-top:18px;flex-wrap:wrap}
+.det-rate .stars{display:flex;gap:3px;color:var(--sun);font-size:23px;cursor:pointer}
+.det-rate .stars .off{color:var(--line)}
+.det-rate .stars span{transition:transform .1s}.det-rate .stars span:hover{transform:scale(1.18)}
+.det-rate .lbl{font-size:13px;color:var(--ink-soft);font-family:'Space Grotesk'}
+.metabar{display:flex;margin-top:26px;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+.metabar div{flex:1;padding:16px 12px;text-align:center;border-right:1.5px solid var(--line)}
+.metabar div:last-child{border-right:none}
+.metabar b{font-family:'Space Grotesk';font-size:22px;font-weight:700;display:block}
+.metabar span{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);font-family:'Space Grotesk'}
+.det-cols{display:grid;grid-template-columns:1fr 1.5fr;gap:42px;margin-top:42px}
+.det-cols h4{font-family:'Space Grotesk';font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px;padding-bottom:10px;border-bottom:3px solid var(--blue);display:inline-block}
+.ing{list-style:none;display:flex;flex-direction:column;gap:11px}
+.ing li{display:flex;justify-content:space-between;gap:12px;font-size:14.5px;padding-bottom:11px;border-bottom:1px solid var(--line)}
+.ing li span:last-child{color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap;font-family:'Space Grotesk'}
+.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:19px}
+.steps li{display:flex;gap:15px;font-size:15px;line-height:1.62}
+.steps li::before{counter-increment:s;content:counter(s);flex-shrink:0;width:31px;height:31px;border-radius:9px;background:var(--blue-tint);color:var(--blue-deep);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:15px}
+.det-note{margin-top:42px;border:1.5px solid var(--line);border-left:4px solid var(--blue);border-radius:0 14px 14px 0;padding:20px 22px}
+.det-note .l{font-family:'Space Grotesk';font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--blue-deep);margin-bottom:8px}
+.det-note p{font-size:14.5px;line-height:1.6}
+
+/* MODAL */
+#modal{position:fixed;inset:0;z-index:60;display:none;align-items:flex-end;justify-content:center;background:rgba(14,17,22,.4)}
+#modal.on{display:flex;animation:fade .25s}
+.sheet{background:#fff;width:100%;max-width:560px;border-radius:22px 22px 0 0;max-height:92vh;overflow-y:auto;animation:sheet .35s cubic-bezier(.2,.7,.2,1)}
+@media(min-width:640px){#modal{align-items:center}.sheet{border-radius:22px}}
+.sheet-head{padding:24px 26px 0;display:flex;justify-content:space-between;align-items:flex-start}
+.sheet-head h3{font-family:'Space Grotesk';font-size:23px;font-weight:600;letter-spacing:-.01em}
+.sheet-head p{font-size:13.5px;color:var(--ink-soft);margin-top:6px}
+.x{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--line);display:grid;place-items:center;font-size:16px;color:var(--ink-soft)}
+.tabs{display:flex;gap:9px;padding:22px 26px 0}
+.tab{flex:1;padding:14px;border-radius:13px;border:1.5px solid var(--line);font-size:14px;font-weight:600;font-family:'Space Grotesk';color:var(--ink-soft);display:flex;flex-direction:column;align-items:center;gap:7px;transition:.15s}
+.tab .ic{font-size:22px}
+.tab.on{border-color:var(--blue);background:var(--blue-tint);color:var(--blue-deep)}
+.pane{padding:22px 26px 8px}
+.drop{border:2px dashed var(--line);border-radius:16px;padding:36px 20px;text-align:center;cursor:pointer;transition:.15s}
+.drop:hover{border-color:var(--blue);background:var(--blue-tint)}
+.drop .big{font-size:38px}
+.drop b{display:block;font-size:15px;margin-top:11px;font-family:'Space Grotesk'}
+.drop span{font-size:13px;color:var(--ink-soft);display:block;margin-top:5px}
+.linkin{width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:13px;font-size:14.5px;outline:none}
+.linkin:focus{border-color:var(--blue)}
+.flow{display:flex;align-items:center;gap:11px;margin-top:18px;padding:14px 16px;background:var(--blue-tint);border-radius:13px}
+.flow .arrow{color:var(--blue-deep);font-size:18px}
+.flow p{font-size:13px;color:var(--blue-deep);line-height:1.45}
+.sheet-foot{padding:8px 26px 28px}
+.sheet-foot .prim{width:100%;background:var(--blue);color:#fff;font-weight:600;font-family:'Space Grotesk';padding:15px;border-radius:13px;font-size:14.5px;transition:.15s}
+.sheet-foot .prim:hover{background:var(--blue-deep)}
+.preview{padding:4px 26px 8px}
+.pv-card{border:1.5px solid var(--line);border-radius:15px;overflow:hidden}
+.pv-card .frame{height:150px}
+.pv-card .bd{padding:16px}
+.pv-card .k{font-family:'Space Grotesk';font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--blue-deep);font-weight:600}
+.pv-card h3{font-family:'Space Grotesk';font-size:20px;font-weight:700;margin:6px 0 8px}
+.pv-card .r{display:flex;gap:14px;font-size:12.5px;color:var(--ink-soft)}
+.pv-tag{display:inline-flex;gap:6px;margin-top:13px;font-size:12.5px;font-family:'Space Grotesk';color:var(--blue-deep);background:var(--blue-tint);padding:6px 12px;border-radius:20px;font-weight:600}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);z-index:70;background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-family:'Space Grotesk';opacity:0;transition:.3s;pointer-events:none}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes sheet{from{transform:translateY(40px)}to{transform:translateY(0)}}
+@media(max-width:860px){
+  .hero-grid{grid-template-columns:1fr;gap:28px}
+  .hero-feat .frame{height:260px}
+  .det-cols{grid-template-columns:1fr;gap:32px}
+  .about{grid-template-columns:1fr}
+  .about .frame{height:180px}
+  .nav{display:none}
+  .add-btn span{display:none}.add-btn{padding:10px 12px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-card">
+    <div class="login-mark">DANIEL OVERESCH<span class="d">.</span></div>
+    <h1 class="disp">Schön, dass du<br>da bist.</h1>
+    <div class="login-rule"></div>
+    <p class="sub">Alles, was ich koche – an einem Ort und im gleichen Look. Zugang für Freunde &amp; Familie.</p>
+    <div class="pw-row">
+      <input id="pw" type="password" placeholder="Zugangswort" autocomplete="off">
+      <button onclick="unlock()">Öffnen</button>
+    </div>
+    <p class="login-hint">Demo: einfach auf <b>Öffnen</b> tippen</p>
+  </div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-in">
+      <div class="mark">Daniel Overesch<span class="dot">.</span><small>KÜCHE</small></div>
+      <nav class="nav">
+        <a onclick="scrollToLib()">Rezepte</a>
+        <a onclick="scrollToLib()">Kategorien</a>
+        <a onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">Über mich</a>
+      </nav>
+      <div class="tools">
+        <button class="iconbtn" onclick="toggleSearch()" aria-label="Suche"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></button>
+        <button class="iconbtn" onclick="showSaved()" aria-label="Merkliste"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.6 8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg><span class="badge" id="save-badge" style="display:none">0</span></button>
+        <button class="add-btn" onclick="openModal()">＋<span>Rezept</span></button>
+        <div class="avatar">DO</div>
+      </div>
+    </div>
+    <div class="searchbar" id="searchbar"><div class="searchbar-in">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--ink-soft)"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+      <input id="q" placeholder="Nach Gericht, Zutat oder Küche suchen…" oninput="onSearch()">
+      <button class="iconbtn" onclick="toggleSearch()">✕</button>
+    </div></div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero"><div class="wrap"><div class="hero-grid">
+    <div>
+      <span class="lab">Daniels Rezeptsammlung</span>
+      <h1>Willkommen in<br>meiner <span class="u">Küche</span>.</h1>
+      <p class="sub">Ein Foto knipsen oder einen Link einwerfen – daraus wird eine schöne, einheitliche Rezeptseite. Zum Bewerten, Wiederfinden und mit Freunden Teilen.</p>
+      <div class="hero-cta">
+        <button class="btn-blue" onclick="scrollToLib()">Alle Rezepte ansehen</button>
+        <button class="btn-text" onclick="openModal()">+ Rezept hinzufügen</button>
+      </div>
+    </div>
+    <div class="hero-feat" id="hero-feat"></div>
+  </div></div></section>
+
+  <!-- LIBRARY -->
+  <div class="section section-top" id="library"><div class="wrap">
+    <div class="sec-head">
+      <span class="lab">Die Sammlung</span>
+      <h2 class="disp">Alle Rezepte</h2>
+      <p>Sortiert nach Kochbuch-Logik – von der Vorspeise bis zu den Grundlagen.</p>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="toolbar">
+      <span class="count" id="count"></span>
+      <div class="sortsel" id="sort">
+        <button data-s="chapter" class="on" onclick="setSort('chapter')">Kapitel</button>
+        <button data-s="rating" onclick="setSort('rating')">Bestbewertet</button>
+        <button data-s="time" onclick="setSort('time')">Schnellste</button>
+        <button data-s="new" onclick="setSort('new')">Neueste</button>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div></div>
+
+  <!-- ABOUT -->
+  <div class="section section-top" id="about"><div class="wrap">
+    <div class="about">
+      <div class="frame" id="about-img"></div>
+      <div>
+        <span class="lab">Über mich</span>
+        <h3 class="disp">Moin, ich bin Daniel.</h3>
+        <p>Tagsüber sortiere ich <b>Strategien</b>, abends am liebsten <b>Rezepte</b>. Was mich beim Kochen immer genervt hat: Die guten Sachen liegen überall verstreut – abfotografierte Kochbuchseiten, Screenshots, Links. Hier landet alles im selben, aufgeräumten Look. Aus <b>Münster</b>, gebürtiger Rheiner, und ja – es schmeckt besser, wenn Bayern gewinnt.</p>
+      </div>
+    </div>
+  </div></div>
+
+  <footer><div class="wrap"><div class="foot-in">
+    <div class="mark">Daniel Overesch<span style="color:var(--blue)">.</span><small>KÜCHE</small></div>
+    <span>Privat &amp; passwortgeschützt · für Freunde &amp; Familie</span>
+    <span>© 2026 Daniel Overesch</span>
+  </div></div></footer>
+</div>
+
+<div id="detail"><div class="det-top"><div class="det-top-in">
+  <button class="back" onclick="closeDetail()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg> Zurück</button>
+  <div class="det-actions">
+    <button id="det-save" onclick="toggleSaveCurrent()">♡ Merken</button>
+    <button onclick="toast('Druckansicht geöffnet')">⎙ Drucken</button>
+  </div>
+</div></div><div class="det-wrap" id="det-body"></div></div>
+
+<div id="modal"><div class="sheet">
+  <div class="sheet-head">
+    <div><h3 class="disp">Rezept hinzufügen</h3><p>Egal wie es reinkommt – es wird immer zur gleichen Rezeptseite.</p></div>
+    <button class="x" onclick="closeModal()">✕</button>
+  </div>
+  <div class="tabs">
+    <button class="tab on" id="tab-photo" onclick="setTab('photo')"><span class="ic">📷</span>Foto hochladen</button>
+    <button class="tab" id="tab-link" onclick="setTab('link')"><span class="ic">🔗</span>Per Link</button>
+  </div>
+  <div id="pane-photo" class="pane">
+    <div class="drop" onclick="showPreview()"><div class="big">📸</div><b>Foto ablegen oder aufnehmen</b><span>Kochbuchseite, Zettel oder eigenes Gericht</span></div>
+    <div class="flow"><span class="arrow">↳</span><p>Text wird automatisch erkannt und in <b>Zutaten + Zubereitung</b> aufgeteilt.</p></div>
+  </div>
+  <div id="pane-link" class="pane hidden">
+    <input class="linkin" placeholder="https://…  Rezept-Link einfügen">
+    <div class="flow"><span class="arrow">↳</span><p>Die Seite wird importiert und in deinen <b>einheitlichen Look</b> übersetzt – ohne Werbung, ohne Vorgeschichte.</p></div>
+  </div>
+  <div id="preview" class="preview hidden">
+    <div class="pv-card">
+      <div class="frame" style="background:#E7F6FC"><span class="ph"><b>Ossobuco</b></span><img src="https://loremflickr.com/640/360/ossobuco,braised" onerror="this.remove()" alt=""></div>
+      <div class="bd"><div class="k">Hauptgerichte · Italienisch</div><h3 class="disp">Ossobuco alla Milanese</h3><div class="r"><span>⏱ 140 Min</span><span>👥 4</span><span>◆ Mittel</span></div><div class="pv-tag">✓ In einheitlichen Look übersetzt</div></div>
+    </div>
+  </div>
+  <div class="sheet-foot"><button class="prim" id="save-btn" onclick="saveRecipe()">Weiter</button></div>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+const CATS=["Alle","Vorspeisen","Suppen","Salate","Hauptgerichte","Beilagen","Desserts","Backen & Brot","Grundlagen"];
+const SRC={own:{l:"Eigenes Rezept",i:"✎"},book:{l:"Aus Kochbuch",i:"📖"},link:{l:"Web-Link",i:"🔗"}};
+const IMG=(kw,w=640,h=480)=>`https://loremflickr.com/${w}/${h}/${kw}`;
+
+const R=[
+ {id:1,t:"Kürbissuppe mit Ingwer",c:"Suppen",cui:"Herbst",time:35,serv:4,diff:"Einfach",rate:4.6,cnt:18,src:"own",kw:"pumpkin,soup",col:"#FFE7CC",
+  lede:"Samtig, wärmend und mit einer Ingwer-Schärfe, die wach macht.",
+  ing:[["Hokkaido-Kürbis","1 kg"],["Zwiebel","1"],["Ingwer","20 g"],["Gemüsebrühe","800 ml"],["Kokosmilch","200 ml"],["Kürbiskernöl","2 EL"]],
+  st:["Kürbis, Zwiebel und Ingwer grob würfeln.","In etwas Öl 5 Min anschwitzen.","Mit Brühe aufgießen, 20 Min köcheln.","Kokosmilch zugeben und fein pürieren.","Mit Kürbiskernöl anrichten."],
+  note:"Schmeckt am nächsten Tag noch besser. Ein Klecks Crème fraîche macht sie runder."},
+ {id:2,t:"Rinderrouladen",c:"Hauptgerichte",cui:"Deutsch",time:130,serv:4,diff:"Mittel",rate:4.9,cnt:31,src:"book",kw:"beef,roulade",col:"#F3DACE",
+  lede:"Der Sonntagsklassiker, langsam geschmort bis er zerfällt.",
+  ing:[["Rouladenfleisch","4 Scheiben"],["Senf","3 EL"],["Speck","4 Scheiben"],["Gewürzgurken","2"],["Zwiebeln","2"],["Rinderfond","500 ml"]],
+  st:["Fleisch mit Senf bestreichen, salzen und pfeffern.","Speck, Gurke und Zwiebel auflegen, aufrollen, fixieren.","Rundum scharf anbraten.","Mit Fond ablöschen, 90 Min schmoren.","Sauce einkochen und abschmecken."],
+  note:"Der Bratensatz ist die halbe Miete – nicht wegschütten."},
+ {id:3,t:"Caprese mit Basilikumöl",c:"Salate",cui:"Italienisch",time:15,serv:2,diff:"Einfach",rate:4.5,cnt:12,src:"own",kw:"caprese,salad",col:"#DFF2D8",
+  lede:"Drei gute Zutaten, richtig behandelt – mehr braucht es nicht.",
+  ing:[["Tomaten","3"],["Büffelmozzarella","250 g"],["Basilikum","1 Bund"],["Olivenöl","4 EL"],["Fleur de Sel","1 Prise"]],
+  st:["Tomaten und Mozzarella in Scheiben schneiden.","Abwechselnd anrichten.","Basilikum mit Öl kurz mixen.","Darüberträufeln, salzen."],
+  note:"Nie aus dem Kühlschrank servieren – Zimmertemperatur bringt das Aroma."},
+ {id:4,t:"Schokoladen-Soufflé",c:"Desserts",cui:"Französisch",time:30,serv:4,diff:"Anspruchsvoll",rate:4.8,cnt:24,src:"book",kw:"chocolate,souffle",col:"#EADCD1",
+  lede:"Außen fest, innen flüssig. Das Timing entscheidet alles.",
+  ing:[["Zartbitterschokolade","150 g"],["Butter","80 g"],["Eier","3"],["Zucker","60 g"],["Mehl","1 EL"]],
+  st:["Ofen auf 200 °C vorheizen, Förmchen buttern.","Schokolade mit Butter schmelzen.","Eier mit Zucker schaumig schlagen.","Alles vorsichtig verrühren.","10–12 Min backen – Mitte bleibt flüssig."],
+  note:"Direkt aus dem Ofen servieren, sonst fällt es zusammen."},
+ {id:5,t:"Bruschetta al Pomodoro",c:"Vorspeisen",cui:"Italienisch",time:15,serv:4,diff:"Einfach",rate:4.4,cnt:9,src:"link",kw:"bruschetta",col:"#FCE9CF",
+  lede:"Knuspriges Brot, reife Tomaten, viel Olivenöl.",
+  ing:[["Ciabatta","1"],["Tomaten","4"],["Knoblauch","1 Zehe"],["Basilikum","6 Blätter"],["Olivenöl","3 EL"]],
+  st:["Brot in Scheiben rösten.","Mit Knoblauch einreiben.","Tomaten würfeln, mit Öl und Basilikum mischen.","Auf das Brot geben, salzen."],
+  note:"Tomaten kurz abtropfen lassen, sonst weicht das Brot durch."},
+ {id:6,t:"Mediterranes Ofengemüse",c:"Beilagen",cui:"Mediterran",time:45,serv:4,diff:"Einfach",rate:4.6,cnt:15,src:"own",kw:"roasted,vegetables",col:"#E8EFD3",
+  lede:"Ein Blech, viel Farbe, kaum Aufwand.",
+  ing:[["Zucchini","2"],["Paprika","2"],["Aubergine","1"],["Kirschtomaten","200 g"],["Olivenöl","4 EL"],["Rosmarin","2 Zweige"]],
+  st:["Gemüse in mundgerechte Stücke schneiden.","Mit Öl, Salz und Rosmarin mischen.","Auf ein Blech geben.","Bei 200 °C 35 Min rösten."],
+  note:"Nicht zu eng legen – sonst dünstet es statt zu rösten."},
+ {id:7,t:"Sauerteigbrot",c:"Backen & Brot",cui:"Backen",time:240,serv:8,diff:"Anspruchsvoll",rate:4.9,cnt:41,src:"book",kw:"sourdough,bread",col:"#F0E4CE",
+  lede:"Geduld zahlt sich aus: knusprige Kruste, saftige Krume.",
+  ing:[["Weizenmehl 550","400 g"],["Roggenmehl","100 g"],["Sauerteig","100 g"],["Wasser","350 ml"],["Salz","10 g"]],
+  st:["Alles zu einem Teig kneten.","3 Std gehen lassen, dabei 3× dehnen und falten.","Formen, über Nacht kühl gehen lassen.","Bei 240 °C mit Dampf 40 Min backen."],
+  note:"Klopftest: klingt der Boden hohl, ist es fertig."},
+ {id:8,t:"Spaghetti Carbonara",c:"Hauptgerichte",cui:"Italienisch",time:25,serv:2,diff:"Mittel",rate:4.9,cnt:53,src:"link",kw:"carbonara,pasta",col:"#FBEFCB",
+  lede:"Vier Zutaten, null Sahne, maximale Cremigkeit.",
+  ing:[["Spaghetti","200 g"],["Guanciale","100 g"],["Eigelb","3"],["Pecorino","50 g"],["Pfeffer","reichlich"]],
+  st:["Nudeln bissfest kochen.","Guanciale knusprig auslassen.","Eigelb mit Pecorino verrühren.","Nudeln mit etwas Kochwasser cremig ziehen – ohne Hitze."],
+  note:"Die Cremigkeit kommt aus Ei und Kochwasser, nie aus Sahne."},
+ {id:9,t:"Apfelstrudel",c:"Desserts",cui:"Österreichisch",time:75,serv:6,diff:"Mittel",rate:4.7,cnt:22,src:"book",kw:"apple,strudel",col:"#F4E6CE",
+  lede:"Hauchdünner Teig, warme Zimt-Apfel-Füllung.",
+  ing:[["Strudelteig","1"],["Äpfel","800 g"],["Rosinen","50 g"],["Zimt","1 TL"],["Semmelbrösel","4 EL"],["Butter","60 g"]],
+  st:["Äpfel in Scheiben schneiden, mit Zimt und Rosinen mischen.","Teig dünn ausziehen, mit Bröseln bestreuen.","Füllung auftragen, einrollen.","Mit Butter bestreichen, 40 Min backen."],
+  note:"Der Teig muss so dünn sein, dass man die Zeitung durchliest."},
+ {id:10,t:"Cremiger Hummus",c:"Vorspeisen",cui:"Orientalisch",time:20,serv:4,diff:"Einfach",rate:4.5,cnt:17,src:"own",kw:"hummus",col:"#F1E8CC",
+  lede:"Besonders luftig durch einen einfachen Trick.",
+  ing:[["Kichererbsen","250 g"],["Tahin","3 EL"],["Zitrone","1"],["Knoblauch","1 Zehe"],["Kreuzkümmel","1 TL"]],
+  st:["Kichererbsen mit etwas Natron weich kochen.","Mit Tahin, Zitrone und Knoblauch pürieren.","Eiswasser zugeben bis cremig.","Mit Öl und Kreuzkümmel anrichten."],
+  note:"Eiswasser statt Kochwasser macht ihn besonders luftig."},
+ {id:11,t:"Bratkartoffeln",c:"Beilagen",cui:"Deutsch",time:30,serv:4,diff:"Einfach",rate:4.6,cnt:28,src:"own",kw:"fried,potatoes",col:"#F3E6C9",
+  lede:"Knusprig außen, weich innen – das Geheimnis ist Geduld.",
+  ing:[["Festkochende Kartoffeln","800 g"],["Zwiebel","1"],["Speck","80 g"],["Butterschmalz","2 EL"]],
+  st:["Kartoffeln vorkochen, auskühlen, in Scheiben schneiden.","In heißem Schmalz goldbraun braten.","Zwiebel und Speck zugeben.","Salzen, mit Petersilie bestreuen."],
+  note:"Vorgekocht und über Nacht kalt – dann werden sie richtig knusprig."},
+ {id:12,t:"Grundrezept Pfannkuchen",c:"Grundlagen",cui:"Grundlagen",time:20,serv:4,diff:"Einfach",rate:5.0,cnt:36,src:"own",kw:"pancakes",col:"#FBEFCE",
+  lede:"Die Basis für Crêpes, Palatschinken und Wraps.",
+  ing:[["Mehl","250 g"],["Milch","500 ml"],["Eier","3"],["Salz","1 Prise"],["Butter","zum Braten"]],
+  st:["Alle Zutaten zu einem glatten Teig verrühren.","15 Min quellen lassen.","In heißer Pfanne dünn ausbacken.","Nach Wunsch süß oder herzhaft füllen."],
+  note:"Einmal gelernt, nie wieder Fertigmischung."}
+];
+
+let state={cat:"Alle",sort:"chapter",tab:"photo",addStep:"input",savedOnly:false,curr:null};
+let rating={}, saved=new Set();
+const $=s=>document.querySelector(s);
+const fmt=n=>n.toFixed(1).replace('.',',');
+const getR=r=>rating[r.id]??r.rate;
+const frame=(r,cls="")=>`<div class="frame ${cls}" style="background:${r.col}"><span class="ph"><b>${r.t}</b></span><img src="${IMG(r.kw)}" loading="lazy" alt="" onerror="this.remove()"></div>`;
+
+function unlock(){$("#login").style.opacity=0;$("#login").style.transition="opacity .45s";setTimeout(()=>{$("#login").classList.add("hidden");$("#app").classList.add("on");boot();},450)}
+$("#pw").addEventListener("keydown",e=>{if(e.key==="Enter")unlock()});
+
+function boot(){renderFeat();renderChips();renderGrid();$("#about-img").innerHTML=`<span class="ph"></span><img src="${IMG('kitchen,herbs',600,600)}" alt="" onerror="this.remove()">`;$("#about-img").style.background="#E7F6FC"}
+
+function renderFeat(){
+  const r=[...R].sort((a,b)=>b.cnt-a.cnt)[0];
+  $("#hero-feat").innerHTML=`${frame(r)}<span class="badge-feat over">★ <b>Meistgekocht</b></span><div class="fcap over"><h3>${r.t}</h3><div class="m"><span>⏱ ${r.time} Min</span><span>★ ${fmt(getR(r))} (${r.cnt})</span></div></div>`;
+  $("#hero-feat").onclick=()=>openDetail(r.id);
+}
+function cardHTML(r,i=0){
+  const on=saved.has(r.id)?'on':'';
+  return `<article class="rcard" style="animation-delay:${i*25}ms" onclick="openDetail(${r.id})">
+    ${frame(r).replace('</div>',`<button class="heart over ${on}" onclick="event.stopPropagation();toggleSave(${r.id})">♥</button><span class="src over">${SRC[r.src].i} ${SRC[r.src].l}</span></div>`)}
+    <div class="body"><div class="k">${r.c} · ${r.cui}</div><h3>${r.t}</h3>
+    <div class="meta"><span>⏱ ${r.time} Min</span><span class="rate-inline">★ ${fmt(getR(r))} <span class="cnt">(${r.cnt})</span></span></div></div>
+  </article>`;
+}
+function renderChips(){$("#chips").innerHTML=CATS.map(c=>{const n=c==="Alle"?R.length:R.filter(r=>r.c===c).length;return `<button class="chip ${state.cat===c?'active':''}" onclick="setCat('${c}')">${c} (${n})</button>`}).join("")}
+function renderGrid(){
+  const q=$("#q").value.trim().toLowerCase();
+  let list=R.filter(r=>state.cat==="Alle"||r.c===state.cat);
+  if(state.savedOnly)list=list.filter(r=>saved.has(r.id));
+  if(q)list=list.filter(r=>(r.t+" "+r.c+" "+r.cui+" "+r.ing.map(i=>i[0]).join(" ")).toLowerCase().includes(q));
+  if(state.sort==="chapter")list.sort((a,b)=>CATS.indexOf(a.c)-CATS.indexOf(b.c)||a.t.localeCompare(b.t));
+  if(state.sort==="rating")list.sort((a,b)=>getR(b)-getR(a)||b.cnt-a.cnt);
+  if(state.sort==="time")list.sort((a,b)=>a.time-b.time);
+  if(state.sort==="new")list.sort((a,b)=>b.id-a.id);
+  $("#count").textContent=`${list.length} ${list.length===1?'Rezept':'Rezepte'}${state.savedOnly?' auf der Merkliste':state.cat!=="Alle"?' in '+state.cat:''}`;
+  $("#grid").innerHTML=list.map((r,i)=>cardHTML(r,i)).join("")||`<p style="color:var(--ink-soft);grid-column:1/-1;padding:40px 0">Nix gefunden – andere Suche, oder Zeit für was Neues in der Pfanne?</p>`;
+}
+function setCat(c){state.cat=c;state.savedOnly=false;renderChips();renderGrid();$("#library").scrollIntoView({behavior:'smooth'})}
+function setSort(s){state.sort=s;document.querySelectorAll('#sort button').forEach(b=>b.classList.toggle('on',b.dataset.s===s));renderGrid()}
+function scrollToLib(){$("#library").scrollIntoView({behavior:'smooth'})}
+function showSaved(){state.savedOnly=true;state.cat="Alle";renderChips();renderGrid();$("#library").scrollIntoView({behavior:'smooth'});if(saved.size===0)toast("Noch nichts gemerkt – tippe auf ein Herz")}
+function toggleSearch(){const b=$("#searchbar");b.classList.toggle("on");if(b.classList.contains("on"))setTimeout(()=>$("#q").focus(),50)}
+function onSearch(){renderGrid();$("#library").scrollIntoView({behavior:'smooth'})}
+function toggleSave(id){if(saved.has(id)){saved.delete(id);toast("Von der Merkliste entfernt")}else{saved.add(id);toast("Zur Merkliste hinzugefügt ♥")}const b=$("#save-badge");b.textContent=saved.size;b.style.display=saved.size?'grid':'none';renderGrid();if(state.curr)syncDetailSave()}
+function toggleSaveCurrent(){toggleSave(state.curr)}
+function syncDetailSave(){const b=$("#det-save");const on=saved.has(state.curr);b.classList.toggle("saved",on);b.textContent=on?"♥ Gemerkt":"♡ Merken"}
+
+function openDetail(id){
+  const r=R.find(x=>x.id===id);state.curr=id;
+  $("#det-body").innerHTML=`
+    <div class="frame det-hero" style="background:${r.col}"><span class="ph"><b>${r.t}</b></span><img src="${IMG(r.kw,900,600)}" alt="" onerror="this.remove()">
+      <span class="over" style="position:absolute;top:14px;left:14px;font-size:11px;font-weight:600;font-family:'Space Grotesk';background:#fff;color:var(--ink);padding:6px 12px;border-radius:20px">${SRC[r.src].i} ${SRC[r.src].l}</span></div>
+    <div class="det-head"><div class="k">${r.c} · ${r.cui}</div><h1>${r.t}</h1><p class="lede">${r.lede}</p>
+      <div class="det-rate"><div class="stars" id="rate-stars">${Array.from({length:5},(_,i)=>`<span class="${i<Math.round(getR(r))?'':'off'}" data-v="${i+1}">★</span>`).join("")}</div>
+      <span class="lbl" id="rate-lbl">${fmt(getR(r))} · ${r.cnt} Bewertungen${rating[id]?' · deine: '+rating[id]+'★':''}</span></div></div>
+    <div class="metabar"><div><b>${r.time}</b><span>Minuten</span></div><div><b>${r.serv}</b><span>Portionen</span></div><div><b>${r.diff}</b><span>Aufwand</span></div><div><b>${r.ing.length}</b><span>Zutaten</span></div></div>
+    <div class="det-cols"><div><h4>Zutaten</h4><ul class="ing">${r.ing.map(i=>`<li><span>${i[0]}</span><span>${i[1]}</span></li>`).join("")}</ul></div>
+      <div><h4>Zubereitung</h4><ol class="steps">${r.st.map(s=>`<li>${s}</li>`).join("")}</ol></div></div>
+    <div class="det-note"><div class="l">Notiz</div><p>${r.note}</p></div>`;
+  $("#rate-stars").querySelectorAll("span").forEach(sp=>{sp.onclick=()=>{rating[id]=+sp.dataset.v;openDetail(id);renderGrid();renderFeat();toast(`Bewertung gespeichert · ${sp.dataset.v}★`)}});
+  syncDetailSave();$("#detail").classList.add("on");document.body.style.overflow="hidden";window.scrollTo(0,0);
+}
+function closeDetail(){$("#detail").classList.remove("on");document.body.style.overflow="";state.curr=null}
+
+function openModal(){state.addStep="input";state.tab="photo";syncModal();$("#modal").classList.add("on");document.body.style.overflow="hidden"}
+function closeModal(){$("#modal").classList.remove("on");document.body.style.overflow=""}
+function setTab(t){state.tab=t;state.addStep="input";syncModal()}
+function showPreview(){state.addStep="preview";syncModal()}
+function syncModal(){$("#tab-photo").classList.toggle("on",state.tab==="photo");$("#tab-link").classList.toggle("on",state.tab==="link");const p=state.addStep==="preview";$("#pane-photo").classList.toggle("hidden",p||state.tab!=="photo");$("#pane-link").classList.toggle("hidden",p||state.tab!=="link");$("#preview").classList.toggle("hidden",!p);$("#save-btn").textContent=p?"Zur Sammlung hinzufügen":"Weiter"}
+function saveRecipe(){if(state.addStep==="input"){if(state.tab==="link"){const v=$(".linkin").value.trim();if(v.length<5){toast("Bitte einen Link einfügen");return}}showPreview();return}closeModal();toast("Rezept im einheitlichen Look gespeichert ✓")}
+
+let tt;function toast(m){$("#toast").innerHTML=m;$("#toast").classList.add("on");clearTimeout(tt);tt=setTimeout(()=>$("#toast").classList.remove("on"),2200)}
+</script>
+</body>
+</html>
